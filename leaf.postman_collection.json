@@ -1,0 +1,891 @@
+{
+	"info": {
+		"_postman_id": "36174c18-4b0c-47d2-aae6-1a56dfe1c6aa",
+		"name": "leaf",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authenticate",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c1062f48-c154-4185-ab71-faca6d6fb731",
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"var custom_sessionid = json.VehicleInfoList.vehicleInfo[0].custom_sessionid;",
+									"",
+									"pm.test(\"Has session id\", function () {",
+									"    pm.expect(custom_sessionid).to.not.equals(null);",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"custom_sessionid\", custom_sessionid);",
+									"",
+									"var vin = json.VehicleInfoList.vehicleInfo[0].vin",
+									"pm.test(\"Has vin\", function () {",
+									"    pm.expect(vin).to.not.equals(null);",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"vin\", vin);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "UserId",
+									"value": "{{userId}}",
+									"type": "text"
+								},
+								{
+									"key": "Password",
+									"value": "{{encrypted_password}}",
+									"type": "text"
+								},
+								{
+									"key": "initial_app_str",
+									"value": "{{baseprm}}",
+									"type": "text"
+								},
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}UserLoginRequest.php",
+							"host": [
+								"{{baseUrl}}UserLoginRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "startAc",
+			"item": [
+				{
+					"name": "startac",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"pm.test(\"Has result key\", function () {",
+									"    pm.expect(jsonData).to.have.property('resultKey');",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"startAcResultKey\", json.resultKey);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}ACRemoteRequest.php",
+							"host": [
+								"{{baseUrl}}ACRemoteRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "startacResult",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								},
+								{
+									"key": "resultKey",
+									"value": "{{startAcResultKey}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}ACRemoteResult.php",
+							"host": [
+								"{{baseUrl}}ACRemoteResult",
+								"php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "stopAc",
+			"item": [
+				{
+					"name": "stopac",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"pm.test(\"Has result key\", function () {",
+									"    pm.expect(jsonData).to.have.property('resultKey');",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"startAcResultKey\", json.resultKey);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}ACRemoteOffRequest.php",
+							"host": [
+								"{{baseUrl}}ACRemoteOffRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stopacResult",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								},
+								{
+									"key": "resultKey",
+									"value": "{{startAcResultKey}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}ACRemoteResult.php",
+							"host": [
+								"{{baseUrl}}ACRemoteResult",
+								"php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "startCharge",
+			"item": [
+				{
+					"name": "startCharge",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f224a662-1f48-43fa-8c98-ad29b2dff55a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"pm.test(\"Has result key\", function () {",
+									"    pm.expect(jsonData).to.have.property('resultKey');",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"startChargeResultKey\", json.resultKey);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}BatteryRemoteChargingRequest.php",
+							"host": [
+								"{{baseUrl}}BatteryRemoteChargingRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "startChargeResult",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								},
+								{
+									"key": "resultKey",
+									"value": "{{startChargeResultKey}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}BatteryRemoteChargingResult.php",
+							"host": [
+								"{{baseUrl}}BatteryRemoteChargingResult",
+								"php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "checkBattery",
+			"item": [
+				{
+					"name": "checkBattery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"pm.test(\"Has result key\", function () {",
+									"    pm.expect(json).to.have.property('resultKey');",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"updateRecordsResultKey\", json.resultKey);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}BatteryStatusCheckRequest.php",
+							"host": [
+								"{{baseUrl}}BatteryStatusCheckRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkBatteryResult",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"var requestedDate = new Date(postman.getEnvironmentVariable('updateRecordsDate'));",
+									"var responseDate = new Date(json.BatteryStatusRecords.OperationDateAndTime);",
+									"pm.test(\"Is updated\", function() {",
+									"    pm.expect(responseDate).to.be.above(requestedDate);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								},
+								{
+									"key": "resultKey",
+									"value": "{{updateRecordsResultKey}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}BatteryStatusCheckResultRequest.php",
+							"host": [
+								"{{baseUrl}}BatteryStatusCheckResultRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "batteryRecords",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"var requestedDate = new Date(postman.getEnvironmentVariable('updateRecordsDate'));",
+									"var responseDate = new Date(json.BatteryStatusRecords.OperationDateAndTime);",
+									"pm.test(\"Is updated\", function() {",
+									"    pm.expect(responseDate).to.be.above(requestedDate);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}BatteryStatusRecordsRequest.php",
+							"host": [
+								"{{baseUrl}}BatteryStatusRecordsRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "acSchedule",
+			"item": [
+				{
+					"name": "scheduleAc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"pm.test(\"Has result key\", function () {",
+									"    pm.expect(json).to.have.property('resultKey');",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"updateRecordsResultKey\", json.resultKey);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								},
+								{
+									"key": "ExecuteTime",
+									"value": "2019/10/15 20:46",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}ACRemoteUpdateRequest.php",
+							"host": [
+								"{{baseUrl}}ACRemoteUpdateRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancelScheduleAc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"pm.test(\"Has result key\", function () {",
+									"    pm.expect(json).to.have.property('resultKey');",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"updateRecordsResultKey\", json.resultKey);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}ACRemoteCancelRequest.php",
+							"host": [
+								"{{baseUrl}}ACRemoteCancelRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getScheduledAc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d94d6506-d5c3-4851-9b01-0a3868ed219d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var json = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Has correct status\", function () {",
+									"    pm.expect(json.status).to.equals(200);",
+									"});",
+									"",
+									"pm.test(\"Has result key\", function () {",
+									"    pm.expect(json).to.have.property('resultKey');",
+									"});",
+									"",
+									"postman.setEnvironmentVariable(\"updateRecordsResultKey\", json.resultKey);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "RegionCode",
+									"value": "{{region}}",
+									"type": "text"
+								},
+								{
+									"key": "custom_sessionid",
+									"value": "{{custom_sessionid}}",
+									"type": "text"
+								},
+								{
+									"key": "VIN",
+									"value": "{{vin}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}GetScheduledACRemoteRequest.php",
+							"host": [
+								"{{baseUrl}}GetScheduledACRemoteRequest",
+								"php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "bb2b78bf-5710-4c21-82e7-e9c407984f60",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "462c7ee0-f58a-4584-92a6-91d9402cf4bd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "cce75d3b-f20e-4706-bc26-ed710f019201",
+			"key": "baseUrl",
+			"value": "https://gdcportalgw.its-mo.com/api_v190426_NE/gdc/",
+			"type": "string"
+		},
+		{
+			"id": "f5f709cb-ea84-4e36-a7cf-ae76c50e7658",
+			"key": "baseprm",
+			"value": "9s5rfKVuMrT03RtzajWNcA",
+			"type": "string"
+		}
+	]
+}
